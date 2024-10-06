@@ -1,0 +1,112 @@
+package com.michaelrichardhall.company_search.service;
+
+import com.michaelrichardhall.company_search.tru_proxy_api.gateway.Gateway;
+import com.michaelrichardhall.company_search.tru_proxy_api.responses.TruProxyAPIAddress;
+import com.michaelrichardhall.company_search.tru_proxy_api.responses.TruProxyAPICompany;
+import com.michaelrichardhall.company_search.tru_proxy_api.responses.TruProxyAPIOfficer;
+import com.michaelrichardhall.company_search.web.dto.Address;
+import com.michaelrichardhall.company_search.web.dto.Company;
+import com.michaelrichardhall.company_search.web.dto.Officer;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.isNull;
+import static org.mockito.Mockito.when;
+
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = {CompanySearchService.class})
+class CompanySearchServiceTest {
+
+    public static final String COMPANY_NAME = "Company Name";
+    public static final String COMPANY_NUMBER = "0123456";
+
+    @Autowired
+    private CompanySearchService companySearchService;
+
+    @MockBean
+    private Gateway truProxyAPIGateway;
+
+    @Test
+    public void givenCompanyNameAndNumber_whenSearchByCompanyName_thenListOfCompaniesReturned() {
+        // Arrange
+        when(truProxyAPIGateway.searchCompanies(anyString(), isNull())).thenReturn(List.of(aTruProxyAPICompany()));
+        when(truProxyAPIGateway.getCompanyOfficersByCompanyNumber(anyString())).thenReturn(aListOfTruProxyAPIOfficers());
+
+        // Act
+        List<Company> companies = companySearchService.getCompanyByCompanyNameOrNumber(COMPANY_NAME, null);
+
+        // Assert
+        assertEquals(1, companies.size());
+        assertEquals(aCompany(), companies.getFirst());
+        assertEquals(1, companies.getFirst().getOfficers().size());
+    }
+
+    @Test
+    void getCompanyByCompanyNumber() {
+        // Arrange
+        when(truProxyAPIGateway.searchCompanies(anyString(), anyString())).thenReturn(List.of(aTruProxyAPICompany()));
+        when(truProxyAPIGateway.getCompanyOfficersByCompanyNumber(anyString())).thenReturn(aListOfTruProxyAPIOfficers());
+
+        // Act
+        List<Company> companies = companySearchService.getCompanyByCompanyNameOrNumber(COMPANY_NAME, COMPANY_NUMBER);
+
+        // Assert
+        assertEquals(1, companies.size());
+        assertEquals(aCompany(), companies.getFirst());
+        assertEquals(1, companies.getFirst().getOfficers().size());
+    }
+
+    private Company aCompany() {
+        return Company.builder()
+                .company_number(COMPANY_NUMBER)
+                .address(anAddress())
+                .officers(List.of(anOfficer()))
+                .build();
+    }
+
+    private Address anAddress() {
+        return Address.builder().build();
+    }
+
+    private Officer anOfficer() {
+        return Officer.builder()
+                .address(anAddress())
+                .build();
+    }
+
+    private TruProxyAPICompany aTruProxyAPICompany() {
+        return TruProxyAPICompany.builder()
+                .company_number(COMPANY_NUMBER)
+                .address(aTruProxyAPIAddress())
+                .build();
+    }
+
+    private TruProxyAPIAddress aTruProxyAPIAddress() {
+        return TruProxyAPIAddress.builder().build();
+    }
+
+    private List<TruProxyAPIOfficer> aListOfTruProxyAPIOfficers() {
+        return List.of(aTruProxyAPIOfficer(), aResignedTruProxyAPIOfficer());
+    }
+
+    private TruProxyAPIOfficer aTruProxyAPIOfficer() {
+        return TruProxyAPIOfficer.builder()
+                .address(aTruProxyAPIAddress())
+                .build();
+    }
+
+    private TruProxyAPIOfficer aResignedTruProxyAPIOfficer() {
+        return TruProxyAPIOfficer.builder()
+                .address(aTruProxyAPIAddress())
+                .resigned_on("2024-10-06")
+                .build();
+    }
+}
