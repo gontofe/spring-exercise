@@ -33,7 +33,7 @@ class CompanySearchControllerTest {
     ObjectMapper mapper = new ObjectMapper();
 
     @Test
-    public void givenCompanySearchRequestWithName_whenCompanySearch_thenReturnCompanySearchResponse() throws Exception {
+    void givenCompanySearchRequestWithName_whenCompanySearch_thenReturnCompanySearchResponse() throws Exception {
         // Arrange
         CompanySearchRequest request = aCompanySearchRequest();
         when(companySearchService.getCompanyByCompanyNameOrNumber(anyString(), isNull(), anyBoolean())).thenReturn(aCompanyList());
@@ -52,7 +52,7 @@ class CompanySearchControllerTest {
     }
 
     @Test
-    public void givenCompanySearchRequestWithNameAndNumber_whenCompanySearch_thenReturnCompanySearchResponse() throws Exception {
+    void givenCompanySearchRequestWithNameAndNumber_whenCompanySearch_thenReturnCompanySearchResponse() throws Exception {
         // Arrange
         CompanySearchRequest request = aCompanySearchRequestWithNumber();
         when(companySearchService.getCompanyByCompanyNameOrNumber(anyString(), anyString(), anyBoolean())).thenReturn(aCompanyList());
@@ -71,7 +71,7 @@ class CompanySearchControllerTest {
     }
 
     @Test
-    public void givenEmptyCompanySearchRequest_whenCompanySearch_thenReturn400() throws Exception {
+    void givenEmptyCompanySearchRequest_whenCompanySearch_thenReturn400() throws Exception {
         // Arrange
         CompanySearchRequest companySearchRequest = anInvalidCompanySearchRequest();
 

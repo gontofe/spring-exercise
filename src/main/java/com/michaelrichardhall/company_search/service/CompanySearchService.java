@@ -18,11 +18,11 @@ public class CompanySearchService {
     @Autowired
     private Gateway truAPIGateway;
 
-    public List<Company> getCompanyByCompanyNameOrNumber(String companyName, String companyNumber, Boolean activeOnly) {
+    public List<Company> getCompanyByCompanyNameOrNumber(String companyName, String companyNumber, boolean activeOnly) {
         List<TruProxyAPICompany> truProxyAPICompanies = truAPIGateway.searchCompanies(companyName, companyNumber);
         List<Company> companyList = new ArrayList<>();
         for (TruProxyAPICompany truProxyAPICompany: truProxyAPICompanies) {
-            if (activeOnly == Boolean.FALSE || (activeOnly == Boolean.TRUE && ACTIVE.equals(truProxyAPICompany.getCompany_status()))) {
+            if (!activeOnly || ACTIVE.equals(truProxyAPICompany.getCompany_status())) {
                 List<TruProxyAPIOfficer> truProxyAPIOfficers = truAPIGateway.getCompanyOfficersByCompanyNumber(truProxyAPICompany.getCompany_number());
                 Company company = Company.getCompanyFromTruProxyAPICompany(truProxyAPICompany);
                 company.setOfficers(truProxyAPIOfficers.stream()

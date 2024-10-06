@@ -64,7 +64,7 @@ class GatewayTest {
     }
 
     @Test
-    public void searchCompaniesByName() {
+    void searchCompaniesByName() {
         // Arrange
         mockWebServer.enqueue(new MockResponse().addHeader(CONTENT_TYPE_APPLICATION_JSON).setBody(TRU_PROXY_COMPANY_SEARCH_RESPONSE));
 
@@ -72,12 +72,12 @@ class GatewayTest {
         List<TruProxyAPICompany> companyList = gateway.searchCompanies(COMPANY_NAME, null);
 
         // Assert
-        assertEquals(1, companyList.size());
+        assertEquals(2, companyList.size());
 
     }
 
     @Test
-    public void searchCompaniesByNameAndNumber() {
+    void searchCompaniesByNameAndNumber() {
         // Arrange
         mockWebServer.enqueue(new MockResponse().addHeader(CONTENT_TYPE_APPLICATION_JSON).setBody(TRU_PROXY_COMPANY_SEARCH_RESPONSE));
 
@@ -85,12 +85,12 @@ class GatewayTest {
         List<TruProxyAPICompany> companyList = gateway.searchCompanies(COMPANY_NAME, COMPANY_NUMBER);
 
         // Assert
-        assertEquals(1, companyList.size());
+        assertEquals(2, companyList.size());
 
     }
 
     @Test
-    public void getCompanyOfficersByCompanyNumber() {
+    void getCompanyOfficersByCompanyNumber() {
         // Arrange
         mockWebServer.enqueue(new MockResponse().addHeader(CONTENT_TYPE_APPLICATION_JSON).setBody(TRU_PROXY_API_COMPANY_OFFICERS_SEARCH_RESPONSE));
 
@@ -98,7 +98,7 @@ class GatewayTest {
         List<TruProxyAPIOfficer> officerList = gateway.getCompanyOfficersByCompanyNumber(COMPANY_NUMBER);
 
         // Assert
-        assertEquals(1, officerList.size());
+        assertEquals(2, officerList.size());
 
     }
 }

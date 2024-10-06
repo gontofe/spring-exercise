@@ -8,7 +8,6 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -21,7 +20,7 @@ public class CompanySearchController {
     @GetMapping()
     public CompanySearchResponse getCompaniesByCompanyNameAndNumber(@Valid @RequestBody CompanySearchRequest request,
                                                                     @RequestParam(defaultValue = "false") Boolean activeOnly) {
-        List<Company> companies = companySearchService.getCompanyByCompanyNameOrNumber(request.getCompanyName(), request.getCompanyNumber(), activeOnly);
+        List<Company> companies = companySearchService.getCompanyByCompanyNameOrNumber(request.getCompanyName(), request.getCompanyNumber(), activeOnly == Boolean.TRUE);
         return CompanySearchResponse.builder().items(companies).total_results(companies.size()).build();
     }
 }

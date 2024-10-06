@@ -35,9 +35,9 @@ class CompanySearchServiceTest {
     private Gateway truProxyAPIGateway;
 
     @Test
-    public void givenCompanyNameAndNumber_whenSearchByCompanyName_thenListOfCompaniesReturned() {
+    void givenCompanyNameAndNumber_whenSearchByCompanyName_thenListOfCompaniesReturned() {
         // Arrange
-        when(truProxyAPIGateway.searchCompanies(anyString(), isNull())).thenReturn(List.of(aTruProxyAPICompany()));
+        when(truProxyAPIGateway.searchCompanies(anyString(), isNull())).thenReturn(aListOfTruProxyAPICompanies());
         when(truProxyAPIGateway.getCompanyOfficersByCompanyNumber(anyString())).thenReturn(aListOfTruProxyAPIOfficers());
 
         // Act
@@ -50,7 +50,7 @@ class CompanySearchServiceTest {
     }
 
     @Test
-    public void givenCompanyNameAndNumber_whenSearchByCompanyNameIncludingInactive_thenListOfCompaniesReturned() {
+    void givenCompanyNameAndNumber_whenSearchByCompanyNameIncludingInactive_thenListOfCompaniesReturned() {
         // Arrange
         when(truProxyAPIGateway.searchCompanies(anyString(), isNull())).thenReturn(aListOfTruProxyAPICompanies());
         when(truProxyAPIGateway.getCompanyOfficersByCompanyNumber(anyString())).thenReturn(aListOfTruProxyAPIOfficers());
@@ -108,7 +108,7 @@ class CompanySearchServiceTest {
 
     private TruProxyAPICompany anInactiveTruProxyAPICompany() {
         return TruProxyAPICompany.builder()
-                .company_status("Dissolved")
+                .company_status("dissolved")
                 .company_number(COMPANY_NUMBER)
                 .address(aTruProxyAPIAddress())
                 .build();
