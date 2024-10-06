@@ -65,7 +65,7 @@ class CompanySearchServiceTest {
     }
 
     @Test
-    void getCompanyByCompanyNumber() {
+    void givenCompanyNameAndNumber_whenSearchByCompanyNameAndNumber_thenListOfCompaniesReturned() {
         // Arrange
         when(truProxyAPIGateway.searchCompanies(anyString(), anyString())).thenReturn(aListOfTruProxyAPICompanies());
         when(truProxyAPIGateway.getCompanyOfficersByCompanyNumber(anyString())).thenReturn(aListOfTruProxyAPIOfficers());
@@ -77,6 +77,16 @@ class CompanySearchServiceTest {
         assertEquals(1, companies.size());
         assertEquals(aCompany(), companies.getFirst());
         assertEquals(1, companies.getFirst().getOfficers().size());
+    }
+
+    @Test
+    void givenCompanyNameAndNumber_whenSearchByCompanyNameAndNumberAndNoResults_thenEmptyListReturned() {
+        // Arrange
+        // Act
+        List<Company> companies = companySearchService.getCompanyByCompanyNameOrNumber(COMPANY_NAME, COMPANY_NUMBER, true);
+
+        // Assert
+        assertEquals(0, companies.size());
     }
 
     private Company aCompany() {
