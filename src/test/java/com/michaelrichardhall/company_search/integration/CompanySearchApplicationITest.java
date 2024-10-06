@@ -69,7 +69,7 @@ class CompanySearchApplicationITest {
                         .withStatus(200)));
         stubFor(get(urlPathEqualTo("/TruProxyAPI/rest/Companies/v1/Officers"))
                 .willReturn(aResponse()
-                .withHeader("Content-Type", "application/json")
+                        .withHeader("Content-Type", "application/json")
                         .withBody(TRU_PROXY_API_COMPANY_OFFICERS_SEARCH_RESPONSE).withStatus(200)));
 
         // Act
@@ -110,8 +110,8 @@ class CompanySearchApplicationITest {
         // Arrange
         // Act
         mockMvc.perform(MockMvcRequestBuilders.get("/company")
-                .contentType("application/json")
-                .content(mapper.writeValueAsString(anInvalidCompanySearchRequest())))
+                        .contentType("application/json")
+                        .content(mapper.writeValueAsString(anInvalidCompanySearchRequest())))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 

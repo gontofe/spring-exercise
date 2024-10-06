@@ -21,7 +21,7 @@ public class CompanySearchService {
     public List<Company> getCompanyByCompanyNameOrNumber(String companyName, String companyNumber, boolean activeOnly) {
         List<TruProxyAPICompany> truProxyAPICompanies = truAPIGateway.searchCompanies(companyName, companyNumber);
         List<Company> companyList = new ArrayList<>();
-        for (TruProxyAPICompany truProxyAPICompany: truProxyAPICompanies) {
+        for (TruProxyAPICompany truProxyAPICompany : truProxyAPICompanies) {
             if (!activeOnly || ACTIVE.equals(truProxyAPICompany.getCompany_status())) {
                 List<TruProxyAPIOfficer> truProxyAPIOfficers = truAPIGateway.getCompanyOfficersByCompanyNumber(truProxyAPICompany.getCompany_number());
                 Company company = Company.getCompanyFromTruProxyAPICompany(truProxyAPICompany);
