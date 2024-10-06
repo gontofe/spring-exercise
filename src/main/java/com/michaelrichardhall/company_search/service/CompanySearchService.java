@@ -14,19 +14,22 @@ import java.util.List;
 @Component
 public class CompanySearchService {
 
+    public static final String ACTIVE = "active";
     @Autowired
     private Gateway truAPIGateway;
 
-    public List<Company> getCompanyByCompanyNameOrNumber(String companyName, String companyNumber) {
+    public List<Company> getCompanyByCompanyNameOrNumber(String companyName, String companyNumber, Boolean activeOnly) {
         List<TruProxyAPICompany> truProxyAPICompanies = truAPIGateway.searchCompanies(companyName, companyNumber);
         List<Company> companyList = new ArrayList<>();
         for (TruProxyAPICompany truProxyAPICompany: truProxyAPICompanies) {
-            List<TruProxyAPIOfficer> truProxyAPIOfficers = truAPIGateway.getCompanyOfficersByCompanyNumber(truProxyAPICompany.getCompany_number());
-            Company company = Company.getCompanyFromTruProxyAPICompany(truProxyAPICompany);
-            company.setOfficers(truProxyAPIOfficers.stream()
-                    .filter(truProxyAPIOfficer -> truProxyAPIOfficer.getResigned_on() == null)
-                    .map(Officer::getOfficerFromTruProxyAPIOfficer).toList());
-            companyList.add(company);
+            if (activeOnly == Boolean.FALSE || (activeOnly == Boolean.TRUE && ACTIVE.equals(truProxyAPICompany.getCompany_status()))) {
+                List<TruProxyAPIOfficer> truProxyAPIOfficers = truAPIGateway.getCompanyOfficersByCompanyNumber(truProxyAPICompany.getCompany_number());
+                Company company = Company.getCompanyFromTruProxyAPICompany(truProxyAPICompany);
+                company.setOfficers(truProxyAPIOfficers.stream()
+                        .filter(truProxyAPIOfficer -> truProxyAPIOfficer.getResigned_on() == null)
+                        .map(Officer::getOfficerFromTruProxyAPIOfficer).toList());
+                companyList.add(company);
+            }
         }
         return companyList;
     }

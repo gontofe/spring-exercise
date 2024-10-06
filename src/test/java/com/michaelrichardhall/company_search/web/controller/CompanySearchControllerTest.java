@@ -15,8 +15,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.isNull;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
@@ -37,7 +36,7 @@ class CompanySearchControllerTest {
     public void givenCompanySearchRequestWithName_whenCompanySearch_thenReturnCompanySearchResponse() throws Exception {
         // Arrange
         CompanySearchRequest request = aCompanySearchRequest();
-        when(companySearchService.getCompanyByCompanyNameOrNumber(anyString(), isNull())).thenReturn(aCompanyList());
+        when(companySearchService.getCompanyByCompanyNameOrNumber(anyString(), isNull(), anyBoolean())).thenReturn(aCompanyList());
 
         // Act
         MvcResult result = mockMvc.perform(get("/company")
@@ -56,7 +55,7 @@ class CompanySearchControllerTest {
     public void givenCompanySearchRequestWithNameAndNumber_whenCompanySearch_thenReturnCompanySearchResponse() throws Exception {
         // Arrange
         CompanySearchRequest request = aCompanySearchRequestWithNumber();
-        when(companySearchService.getCompanyByCompanyNameOrNumber(anyString(), anyString())).thenReturn(aCompanyList());
+        when(companySearchService.getCompanyByCompanyNameOrNumber(anyString(), anyString(), anyBoolean())).thenReturn(aCompanyList());
 
         // Act
         MvcResult result = mockMvc.perform(get("/company")

@@ -41,7 +41,7 @@ class CompanySearchServiceTest {
         when(truProxyAPIGateway.getCompanyOfficersByCompanyNumber(anyString())).thenReturn(aListOfTruProxyAPIOfficers());
 
         // Act
-        List<Company> companies = companySearchService.getCompanyByCompanyNameOrNumber(COMPANY_NAME, null);
+        List<Company> companies = companySearchService.getCompanyByCompanyNameOrNumber(COMPANY_NAME, null, true);
 
         // Assert
         assertEquals(1, companies.size());
@@ -50,13 +50,28 @@ class CompanySearchServiceTest {
     }
 
     @Test
-    void getCompanyByCompanyNumber() {
+    public void givenCompanyNameAndNumber_whenSearchByCompanyNameIncludingInactive_thenListOfCompaniesReturned() {
         // Arrange
-        when(truProxyAPIGateway.searchCompanies(anyString(), anyString())).thenReturn(List.of(aTruProxyAPICompany()));
+        when(truProxyAPIGateway.searchCompanies(anyString(), isNull())).thenReturn(aListOfTruProxyAPICompanies());
         when(truProxyAPIGateway.getCompanyOfficersByCompanyNumber(anyString())).thenReturn(aListOfTruProxyAPIOfficers());
 
         // Act
-        List<Company> companies = companySearchService.getCompanyByCompanyNameOrNumber(COMPANY_NAME, COMPANY_NUMBER);
+        List<Company> companies = companySearchService.getCompanyByCompanyNameOrNumber(COMPANY_NAME, null, false);
+
+        // Assert
+        assertEquals(2, companies.size());
+        assertEquals(aCompany(), companies.getFirst());
+        assertEquals(1, companies.getFirst().getOfficers().size());
+    }
+
+    @Test
+    void getCompanyByCompanyNumber() {
+        // Arrange
+        when(truProxyAPIGateway.searchCompanies(anyString(), anyString())).thenReturn(aListOfTruProxyAPICompanies());
+        when(truProxyAPIGateway.getCompanyOfficersByCompanyNumber(anyString())).thenReturn(aListOfTruProxyAPIOfficers());
+
+        // Act
+        List<Company> companies = companySearchService.getCompanyByCompanyNameOrNumber(COMPANY_NAME, COMPANY_NUMBER, true);
 
         // Assert
         assertEquals(1, companies.size());
@@ -66,6 +81,7 @@ class CompanySearchServiceTest {
 
     private Company aCompany() {
         return Company.builder()
+                .company_status("active")
                 .company_number(COMPANY_NUMBER)
                 .address(anAddress())
                 .officers(List.of(anOfficer()))
@@ -84,9 +100,22 @@ class CompanySearchServiceTest {
 
     private TruProxyAPICompany aTruProxyAPICompany() {
         return TruProxyAPICompany.builder()
+                .company_status("active")
                 .company_number(COMPANY_NUMBER)
                 .address(aTruProxyAPIAddress())
                 .build();
+    }
+
+    private TruProxyAPICompany anInactiveTruProxyAPICompany() {
+        return TruProxyAPICompany.builder()
+                .company_status("Dissolved")
+                .company_number(COMPANY_NUMBER)
+                .address(aTruProxyAPIAddress())
+                .build();
+    }
+
+    private List<TruProxyAPICompany> aListOfTruProxyAPICompanies() {
+        return List.of(aTruProxyAPICompany(), anInactiveTruProxyAPICompany());
     }
 
     private TruProxyAPIAddress aTruProxyAPIAddress() {
